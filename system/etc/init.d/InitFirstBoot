@@ -1,0 +1,28 @@
+#!/system/bin/sh
+# Execute post-install script on first boot
+# Released under GPLv3 - bashintosh (2015)
+
+WAIT=3
+FBSCR="/data/.execonce.sh"
+BB="/sbin/busybox"
+
+is_sys_up() {
+	ps | grep -e systemui
+}
+
+if [ -f "$FBSCR" ]; then
+	$BB chmod 0755 $FBSCR
+	while : ; do
+		if [ $? -eq 0 ]; then
+			$BB sleep 10
+			log -p i -t Init "Executing $FBSCR script"
+			$FBSCR
+
+			break
+		fi
+		$BB sleep $WAIT
+
+	done
+fi
+
+exit 0
